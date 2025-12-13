@@ -1,174 +1,196 @@
-
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 
-// WhatsApp Order Modal Component
-function WhatsAppOrderModal({ product, isOpen, onClose, userInfo, setUserInfo }) {
-  const ADMIN_PHONE = "919030577270"; // replace with your WhatsApp number
+/* ------------------ HELPERS ------------------ */
 
-  if (!isOpen) return null;
+const ADMIN_PHONE = "919030577270";
 
-  const handleChange = (e) =>
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+const getProductImages = (p) =>
+  Array.isArray(p?.images) ? p.images : p?.image ? [p.image] : [];
 
-  // use first image if images array exists
-  const imageForMessage = Array.isArray(product?.images)
-    ? product.images[0]
-    : product?.image;
+const getPriceText = (price) =>
+  price === "N/A" || price === "  N/A"
+    ? "Please share the price and available customization options."
+    : `₹${price}`;
 
-  const handleSendWhatsApp = () => {
-    const pageUrl = window.location.href;
+/* ------------------ WHATSAPP MODAL ------------------ */
 
-    const priceText =
-      product.price === "N/A" || product.price === "  N/A"
-        ? "Please share the price and available customization options for this product."
-        : `₹${product.price}`;
+const WhatsAppOrderModal = memo(
+  ({ product, isOpen, onClose, userInfo, setUserInfo }) => {
+    if (!isOpen || !product) return null;
 
-    const message = `🛍️ *THE PAINTED DREAM ORDER INQUIRY* 🛍️
+    const handleChange = (e) =>
+      setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
 
-Hello! 👋 I would like to order this product from *THE PAINTED DREAM* website:
+    const handleSend = () => {
+      const pageUrl = window.location.href;
+      const images = getProductImages(product);
 
-👤 *Name:* ${userInfo.name || "Not provided"}
-📞 *Phone:* ${userInfo.phone || "Not provided"}
+      const message = `🛍️ *THE PAINTED DREAM ORDER INQUIRY*
 
-🖼️ *Product:* ${product.name}
-💰 *Price:* ${priceText}
-📄 *Details:* ${product.details}
+👤 Name: ${userInfo.name || "Not provided"}
+📞 Phone: ${userInfo.phone || "Not provided"}
 
-🖼️ *Image Link:* ${imageForMessage || "Not provided"}
-🌐 *Page:* ${pageUrl}
+🖼️ Product: ${product.name}
+💰 Price: ${getPriceText(product.price)}
+📄 Details: ${product.details}
 
-Please let me know the next steps.`;
+🖼️ Image: ${images[0] || "Not provided"}
+🌐 Page: ${pageUrl}`;
 
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const whatsappURL = isMobile
-      ? `whatsapp://send?phone=${ADMIN_PHONE}&text=${encodeURIComponent(message)}`
-      : `https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(message)}`;
+      const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+      const url = isMobile
+        ? `whatsapp://send?phone=${ADMIN_PHONE}&text=${encodeURIComponent(
+            message
+          )}`
+        : `https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(message)}`;
 
-    window.open(whatsappURL, "_blank");
-    onClose();
-  };
+      window.open(url, "_blank");
+      onClose();
+    };
 
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-lg p-6 w-11/12 sm:w-96 relative">
-        <button
-          className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-xl"
-          onClick={onClose}
-        >
-          &times;
-        </button>
-        <h2 className="text-xl font-bold mb-4">Your Details</h2>
-        <input
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          value={userInfo.name}
-          onChange={handleChange}
-          className="border rounded px-4 py-2 w-full mb-3"
-        />
-        <input
-          type="tel"
-          name="phone"
-          placeholder="Your Phone (optional)"
-          value={userInfo.phone}
-          onChange={handleChange}
-          className="border rounded px-4 py-2 w-full mb-4"
-        />
-        <button
-          onClick={handleSendWhatsApp}
-          className="flex items-center justify-center gap-2 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
-        >
-          <FaWhatsapp size={18} />
-          Send Order on WhatsApp
-        </button>
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+        <div className="bg-white w-11/12 sm:w-96 p-6 rounded-xl relative">
+          <button onClick={onClose} className="absolute top-3 right-3 text-xl">
+            ×
+          </button>
+
+          <h2 className="text-xl font-bold mb-4">Your Details</h2>
+
+          <input
+            name="name"
+            placeholder="Your Name"
+            value={userInfo.name}
+            onChange={handleChange}
+            className="border rounded px-4 py-2 w-full mb-3"
+          />
+
+          <input
+            name="phone"
+            placeholder="Phone (optional)"
+            value={userInfo.phone}
+            onChange={handleChange}
+            className="border rounded px-4 py-2 w-full mb-4"
+          />
+
+          <button
+            onClick={handleSend}
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded flex justify-center gap-2"
+          >
+            <FaWhatsapp />
+            Send on WhatsApp
+          </button>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
 
-// Mini Product Carousel used for cards when product.images exists
-function ProductCarousel({ images = [], onClick }) {
+/* ------------------ MINI CAROUSEL ------------------ */
+
+const ProductCarousel = memo(({ images, onClick }) => {
   const [index, setIndex] = useState(0);
-  const intervalRef = useRef(null);
-
-  const next = () => setIndex((prev) => (prev + 1) % images.length);
-  const prev = () =>
-    setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
 
   useEffect(() => {
-    if (!images || images.length <= 1) return;
-    intervalRef.current = setInterval(next, 2500);
-    return () => clearInterval(intervalRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (images.length <= 1) return;
+    const id = setInterval(
+      () => setIndex((i) => (i + 1) % images.length),
+      2500
+    );
+    return () => clearInterval(id);
   }, [images]);
 
+  if (!images.length) return null;
+
   return (
-    <div className="relative w-full h-48 overflow-hidden rounded">
+    <div className="relative h-48 overflow-hidden rounded">
       <img
         src={images[index]}
-        className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-105"
+        alt=""
         onClick={onClick}
-        alt={`carousel-${index}`}
+        className="w-full h-full object-cover cursor-pointer"
       />
 
       {images.length > 1 && (
         <>
-          {/* Left Arrow */}
           <button
             onClick={(e) => {
               e.stopPropagation();
-              prev();
+              setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
             }}
-            className="absolute top-1/2 left-2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full"
-            aria-label="Previous"
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 rounded"
           >
             ❮
           </button>
 
-          {/* Right Arrow */}
           <button
             onClick={(e) => {
               e.stopPropagation();
-              next();
+              setIndex((i) => (i + 1) % images.length);
             }}
-            className="absolute top-1/2 right-2 -translate-y-1/2 bg-black/50 text-white px-2 py-1 rounded-full"
-            aria-label="Next"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 rounded"
           >
             ❯
           </button>
-
-          {/* Dots */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIndex(i);
-                }}
-                className={`w-2 h-2 rounded-full ${i === index ? "bg-white" : "bg-gray-400"}`}
-                aria-label={`Go to slide ${i + 1}`}
-              />
-            ))}
-          </div>
         </>
       )}
     </div>
   );
-}
+});
 
-// Main Home Component
+/* ------------------ MAIN COMPONENT ------------------ */
+
 export default function PremiumCandles() {
-  const carouselImages = [
-    "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999063/MAIN_rns2jm.jpg",
-    "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999060/0002_ophrkn.jpg",
-    "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999060/0004_t0sfko.jpg",
-    "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999060/0003_dgrnuj.jpg",
-  ];
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Trending products. Products 13,14,15 have 'images' arrays (placeholder repeats).
-  const trendingProducts = [
+  const [enlarged, setEnlarged] = useState({ images: [], index: 0 });
+  const [zoom, setZoom] = useState(1);
+
+  const [userInfo, setUserInfo] = useState(() => {
+    const saved = localStorage.getItem("whatsappUserInfo");
+    return saved ? JSON.parse(saved) : { name: "", phone: "" };
+  });
+
+  const openModal = useCallback((p) => {
+    setSelectedProduct(p);
+    setIsModalOpen(true);
+  }, []);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    localStorage.setItem("whatsappUserInfo", JSON.stringify(userInfo));
+  };
+
+  const openEnlarged = (p) => {
+    setEnlarged({ images: getProductImages(p), index: 0 });
+    setZoom(1);
+  };
+
+  /* ---- Keyboard Nav ---- */
+  useEffect(() => {
+    const handler = (e) => {
+      if (!enlarged.images.length) return;
+      if (e.key === "Escape") setEnlarged({ images: [], index: 0 });
+      if (e.key === "ArrowRight")
+        setEnlarged((p) => ({
+          ...p,
+          index: (p.index + 1) % p.images.length,
+        }));
+      if (e.key === "ArrowLeft")
+        setEnlarged((p) => ({
+          ...p,
+          index: p.index === 0 ? p.images.length - 1 : p.index - 1,
+        }));
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [enlarged]);
+
+  /* ------------------ PRODUCTS ------------------ */
+
+  const products = [
     {
       id: 13,
       name: "3d Moon",
@@ -185,7 +207,6 @@ export default function PremiumCandles() {
       name: "HAND-MADE GIFT BOX",
       images: [
         "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765560061/IMG-20251212-WA0004_q3rrrm.jpg",
-       
       ],
       price: "N/A",
       details: "CONTACT US for prize details and customization",
@@ -196,47 +217,58 @@ export default function PremiumCandles() {
     {
       id: 1,
       name: "Mandala Art Key Chains",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765558898/IMG-20251212-WA0002_vhgbnm.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765558898/IMG-20251212-WA0002_vhgbnm.jpg",
       price: 60,
-      details: "Each keychain costs 60/- rupees and Contact me for more quantity",
+      details:
+        "Each keychain costs 60/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
       id: 2,
       name: "Key chains",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765558525/IMG-20251211-WA0003_fcdidc.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765558525/IMG-20251211-WA0003_fcdidc.jpg",
       price: 59,
-      details: "Each keychain costs 59/- rupees and Contact me for more quantity",
+      details:
+        "Each keychain costs 59/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
       id: 3,
       name: "Key Chains",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557676/IMG-20251212-WA0008_y9xyql.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557676/IMG-20251212-WA0008_y9xyql.jpg",
       price: 59,
-      details: "Each keychain costs 59/- rupees and Contact me for more quantity",
+      details:
+        "Each keychain costs 59/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
       id: 4,
       name: "Key Chains",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557602/IMG-20251212-WA0009_urm25o.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557602/IMG-20251212-WA0009_urm25o.jpg",
       price: 59,
-      details: "Each keychain costs 59/- rupees and Contact me for more quantity",
+      details:
+        "Each keychain costs 59/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
       id: 5,
       name: "Key Chains",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557514/IMG-20251212-WA0007_eg1mmk.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557514/IMG-20251212-WA0007_eg1mmk.jpg",
       price: 59,
-      details: "Each keychain costs 59/- rupees and Contact me for more quantity",
+      details:
+        "Each keychain costs 59/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
       id: 6,
       name: "VINTAGE FRAMES",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557375/IMG-20251212-WA0013_j0bxbh.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557375/IMG-20251212-WA0013_j0bxbh.jpg",
       price: "N/A",
       details: "CONTACT US for prize details and customization",
       category: "Frames",
@@ -244,31 +276,38 @@ export default function PremiumCandles() {
     {
       id: 7,
       name: "3D MOON",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557219/IMG-20251212-WA0010_ecceqb.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765557219/IMG-20251212-WA0010_ecceqb.jpg",
       price: 500,
-      details: "3d moon 6inch Wooden wall Moon light lamp Hand crafted 3d moon design",
+      details:
+        "3d moon 6inch Wooden wall Moon light lamp Hand crafted 3d moon design",
       category: "Trending",
     },
     {
       id: 8,
       name: "3D MOON",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765556699/IMG-20251212-WA0012_ezpo7z.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765556699/IMG-20251212-WA0012_ezpo7z.jpg",
       price: 1000,
-      details: "3d moon 12inch Wooden wall Moon light lamp Hand crafted 3d moon design",
+      details:
+        "3d moon 12inch Wooden wall Moon light lamp Hand crafted 3d moon design",
       category: "Trending",
     },
     {
       id: 9,
       name: "3D MOON",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765556695/IMG-20251212-WA0011_qhhdy9.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765556695/IMG-20251212-WA0011_qhhdy9.jpg",
       price: 1250,
-      details: "3d moon 15inch Wooden wall Moon light lamp Hand crafted 3d moon design",
+      details:
+        "3d moon 15inch Wooden wall Moon light lamp Hand crafted 3d moon design",
       category: "Trending",
     },
     {
       id: 10,
       name: "ROUND FRAME",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765556693/IMG-20251212-WA0014_hh8mm8.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765556693/IMG-20251212-WA0014_hh8mm8.jpg",
       price: "N/A",
       details: "CONTACT US for prize details and customization",
       category: "Trending",
@@ -276,285 +315,74 @@ export default function PremiumCandles() {
     {
       id: 11,
       name: "Square Frame 2",
-      image: "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765556659/IMG-20251212-WA0016_laihkg.jpg",
+      image:
+        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765556659/IMG-20251212-WA0016_laihkg.jpg",
       price: "N/A",
       details: "CONTACT US for prize details and customization",
       category: "Trending",
     },
   ];
 
-  // Homepage hero carousel state
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const slideInterval = useRef(null);
-
-  useEffect(() => {
-    slideInterval.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % carouselImages.length);
-    }, 3000);
-    return () => clearInterval(slideInterval.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const prevSlide = () =>
-    setCurrentIndex((prev) => (prev === 0 ? carouselImages.length - 1 : prev - 1));
-  const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % carouselImages.length);
-
-  // Modal & User info state
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // enlarged viewer state supports multi-image
-  const [enlarged, setEnlarged] = useState({ images: [], index: 0 });
-
-  // zoom state for pinch-to-zoom
-  const [zoomScale, setZoomScale] = useState(1);
-  const lastDistance = useRef(null);
-  const swipeStart = useRef(null);
-  const lastTap = useRef(0);
-
-  const [userInfo, setUserInfo] = useState(() => {
-    const saved = localStorage.getItem("whatsappUserInfo");
-    return saved ? JSON.parse(saved) : { name: "", phone: "" };
-  });
-
-  const openModal = (product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedProduct(null);
-    localStorage.setItem("whatsappUserInfo", JSON.stringify(userInfo));
-  };
-
-  // click on image in card -> open enlarged viewer (works for images array or single image)
-  const openEnlargedFromProduct = (p, startIndex = 0) => {
-    const imgs = Array.isArray(p.images) ? p.images : p.image ? [p.image] : [];
-    setEnlarged({ images: imgs, index: startIndex });
-    setZoomScale(1);
-  };
-
-  // touch handlers for swipe and pinch
-  const handleTouchStart = (e) => {
-    if (e.touches.length === 1) {
-      swipeStart.current = e.touches[0].clientX;
-    } else {
-      swipeStart.current = null;
-    }
-    // double tap detection
-    const now = Date.now();
-    if (now - lastTap.current < 300) {
-      // double tap -> toggle zoom between 1 and 2
-      setZoomScale((s) => (s > 1 ? 1 : 2));
-    }
-    lastTap.current = now;
-  };
-
-  const handleTouchMove = (e) => {
-    // pinch-to-zoom
-    if (e.touches.length >= 2) {
-      const [t1, t2] = e.touches;
-      const distance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-
-      if (lastDistance.current != null) {
-        let delta = distance - lastDistance.current;
-        let newScale = zoomScale + delta * 0.005;
-        newScale = Math.max(1, Math.min(newScale, 4));
-        setZoomScale(newScale);
-      }
-      lastDistance.current = distance;
-      return;
-    }
-
-    // swipe for single touch (only if not zoomed)
-    if (swipeStart.current != null && e.touches.length === 1 && zoomScale === 1) {
-      const diff = swipeStart.current - e.touches[0].clientX;
-      if (diff > 50) {
-        // next
-        setEnlarged((prev) => ({
-          ...prev,
-          index: (prev.index + 1) % prev.images.length,
-        }));
-        swipeStart.current = null;
-      } else if (diff < -50) {
-        // prev
-        setEnlarged((prev) => ({
-          ...prev,
-          index: prev.index === 0 ? prev.images.length - 1 : prev.index - 1,
-        }));
-        swipeStart.current = null;
-      }
-    }
-  };
-
-  const handleTouchEnd = () => {
-    lastDistance.current = null;
-    swipeStart.current = null;
-  };
-
-  // keyboard nav for enlarged viewer
-  useEffect(() => {
-    const keyHandler = (e) => {
-      if (!enlarged.images || enlarged.images.length === 0) return;
-      if (e.key === "ArrowRight") {
-        setEnlarged((prev) => ({ ...prev, index: (prev.index + 1) % prev.images.length }));
-      } else if (e.key === "ArrowLeft") {
-        setEnlarged((prev) => ({ ...prev, index: prev.index === 0 ? prev.images.length - 1 : prev.index - 1 }));
-      } else if (e.key === "Escape") {
-        setEnlarged({ images: [], index: 0 });
-        setZoomScale(1);
-      }
-    };
-    window.addEventListener("keydown", keyHandler);
-    return () => window.removeEventListener("keydown", keyHandler);
-  }, [enlarged]);
-
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-12">
-      {/* Carousel */}
- 
-      {/* Trending Products */}
-      <h1 className="text-3xl font-bold text-center">Trending Products</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {trendingProducts.map((p) => (
-          <div
-            key={p.id}
-            className="border rounded-lg p-4 shadow hover:shadow-lg transition flex flex-col"
-          >
-            {/* If product has images array -> show ProductCarousel, else show single <img> */}
-            {Array.isArray(p.images) ? (
-              <ProductCarousel images={p.images} onClick={() => openEnlargedFromProduct(p, 0)} />
-            ) : (
-              <img
-                src={p.image}
-                alt={p.name}
-                className="w-full h-48 object-cover rounded cursor-pointer transition-transform duration-300 hover:scale-105"
-                onClick={() => openEnlargedFromProduct(p, 0)}
-              />
-            )}
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold text-center mb-8"> Premium Scented Candles</h1>
 
-            <h2 className="text-lg font-semibold mt-3">{p.name}</h2>
-            <p className="text-gray-700">{p.details}</p>
-            <p className="text-green-700 font-bold mt-1">
-              {p.price === "N/A" ? "Contact for Price" : `₹${p.price}`}
-            </p>
-            <button
-              onClick={() => openModal(p)}
-              className="mt-auto flex items-center justify-center gap-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition"
-            >
-              <FaWhatsapp size={18} />
-              Order on WhatsApp
-            </button>
-          </div>
-        ))}
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {products.map((p) => {
+          const images = getProductImages(p);
+          return (
+            <div key={p.id} className="border p-4 rounded shadow">
+              {images.length > 1 ? (
+                <ProductCarousel
+                  images={images}
+                  onClick={() => openEnlarged(p)}
+                />
+              ) : (
+                <img
+                  src={images[0]}
+                  alt={p.name}
+                  onClick={() => openEnlarged(p)}
+                  className="h-48 w-full object-cover rounded cursor-pointer"
+                />
+              )}
+
+              <h2 className="mt-3 font-semibold">{p.name}</h2>
+              <p className="text-sm text-gray-700">{p.details}</p>
+
+              <button
+                onClick={() => openModal(p)}
+                className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded flex justify-center gap-2"
+              >
+                <FaWhatsapp /> Order on WhatsApp
+              </button>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Enlarged Viewer Modal (supports arrays and single images) */}
+      {/* Enlarged Viewer */}
       {enlarged.images.length > 0 && (
         <div
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60]"
-          onClick={() => {
-            setEnlarged({ images: [], index: 0 });
-            setZoomScale(1);
-          }}
+          onClick={() => setEnlarged({ images: [], index: 0 })}
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center"
         >
-          <div
-            className="relative max-w-4xl w-full p-4"
+          <img
+            src={enlarged.images[enlarged.index]}
+            alt=""
             onClick={(e) => e.stopPropagation()}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            {/* Close Button */}
-            <button
-              className="absolute top-2 right-2 bg-white/80 hover:bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg z-20"
-              onClick={() => {
-                setEnlarged({ images: [], index: 0 });
-                setZoomScale(1);
-              }}
-              aria-label="Close"
-            >
-              ×
-            </button>
-
-            {/* Left Arrow */}
-            {enlarged.images.length > 1 && (
-              <button
-                className="absolute left-2 top-1/2 -translate-y-1/2 text-white bg-black/40 hover:bg-black/60 p-2 rounded-full text-2xl z-20"
-                onClick={() =>
-                  setEnlarged((prev) => ({
-                    ...prev,
-                    index: prev.index === 0 ? prev.images.length - 1 : prev.index - 1,
-                  }))
-                }
-                aria-label="Previous image"
-              >
-                ❮
-              </button>
-            )}
-
-            {/* Image wrapper for transitions & zoom */}
-            <div className="relative w-full max-h-[90vh] overflow-hidden flex items-center justify-center">
-              <img
-                key={enlarged.index}
-                src={enlarged.images[enlarged.index]}
-                alt={`enlarged-${enlarged.index}`}
-                style={{
-                  transform: `scale(${zoomScale})`,
-                  transition: "transform 200ms ease, opacity 300ms ease",
-                }}
-                className="w-full max-h-[90vh] object-contain rounded-xl shadow-lg"
-                draggable={false}
-              />
-            </div>
-
-            {/* Right Arrow */}
-            {enlarged.images.length > 1 && (
-              <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-white bg-black/40 hover:bg-black/60 p-2 rounded-full text-2xl z-20"
-                onClick={() =>
-                  setEnlarged((prev) => ({
-                    ...prev,
-                    index: (prev.index + 1) % prev.images.length,
-                  }))
-                }
-                aria-label="Next image"
-              >
-                ❯
-              </button>
-            )}
-
-            {/* Dots */}
-            {enlarged.images.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-                {enlarged.images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEnlarged((prev) => ({ ...prev, index: i }));
-                      setZoomScale(1);
-                    }}
-                    className={`w-2 h-2 rounded-full ${i === enlarged.index ? "bg-white" : "bg-gray-400"}`}
-                    aria-label={`Go to image ${i + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+            style={{ transform: `scale(${zoom})` }}
+            className="max-h-[90vh] object-contain rounded"
+          />
         </div>
       )}
 
-      {selectedProduct && (
-        <WhatsAppOrderModal
-          product={selectedProduct}
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          userInfo={userInfo}
-          setUserInfo={setUserInfo}
-        />
-      )}
+      <WhatsAppOrderModal
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        userInfo={userInfo}
+        setUserInfo={setUserInfo}
+      />
     </div>
   );
 }
