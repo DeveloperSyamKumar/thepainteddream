@@ -191,16 +191,6 @@ export default function PremiumCandles() {
       details: "CONTACT US for prize details and customization",
       category: "Trending",
     },
-    {
-      id: 15,
-      name: "HAND-MADE GIFT BOX",
-      images: [
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765558898/IMG-20251212-WA0002_vhgbnm.jpg",
-      ],
-      price: "N/A",
-      details: "CONTACT US for prize details and customization",    
-      category: "Trending",
-    },
 
     // the rest remain single-image products
     {
