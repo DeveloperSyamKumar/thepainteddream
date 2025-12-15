@@ -49,9 +49,9 @@ const Navbar = ()  =>{
             <FaPaintBrush /> Customize
           </NavLink>
 
-          <NavLink to="/happyCustomers" className={linkClasses}>
+          {/* <NavLink to="/happyCustomers" className={linkClasses}>
             <FaSmile /> Happy Customers
-          </NavLink>
+          </NavLink> */}
         </div>
 
         {/* Mobile Menu Button */}
