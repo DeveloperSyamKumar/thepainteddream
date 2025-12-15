@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import logo from "../assets/images/logo.png";
 
-export default function Navbar() {
+const Navbar = ()  =>{
   const [isOpen, setIsOpen] = useState(false);
 
   const linkClasses = ({ isActive }) =>
@@ -98,3 +98,5 @@ export default function Navbar() {
     </nav>
   );
 }
+
+export default Navbar

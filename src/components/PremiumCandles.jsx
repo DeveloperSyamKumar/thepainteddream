@@ -141,7 +141,7 @@ const ProductCarousel = memo(({ images, onClick }) => {
 
 /* ------------------ MAIN COMPONENT ------------------ */
 
-export default function PremiumCandles() {
+const  PremiumCandles = ()  =>{
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -360,3 +360,5 @@ export default function PremiumCandles() {
     </div>
   );
 }
+
+export default PremiumCandles

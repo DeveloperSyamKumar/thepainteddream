@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Customize() {
+const Customize = () => {
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -136,3 +136,5 @@ ${form.referenceImageUrl || "N/A"}`;
     </form>
   );
 }
+
+export default Customize

@@ -158,7 +158,7 @@ function ProductCarousel({ images = [], onClick }) {
 }
 
 // Main Home Component
-export default function Home() {
+const Home = () => {
   const carouselImages = [
     "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999063/MAIN_rns2jm.jpg",
     "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999060/0002_ophrkn.jpg",
@@ -608,3 +608,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home
