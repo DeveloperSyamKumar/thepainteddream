@@ -11,9 +11,6 @@ function WhatsAppOrderModal({
   const ADMIN_PHONE = "919030577270";
   if (!isOpen) return null;
 
-
-  
-
   const handleChange = (e) =>
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
 
