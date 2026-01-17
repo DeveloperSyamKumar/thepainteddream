@@ -222,9 +222,9 @@ const Home = () => {
       name: "Mandala Art Key Chains",
       image:
         "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999062/IMG-20250926-WA0019_mecorg.jpg",
-      price: 60,
+      price: 69,
       details:
-        "Each keychain costs 60/- rupees and Contact me for more quantity",
+        "Each keychain costs 69/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
@@ -232,9 +232,9 @@ const Home = () => {
       name: "Key chains",
       image:
         "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999062/IMG-20250926-WA0012_elwxfj.jpg",
-      price: 59,
+      price: 69,
       details:
-        "Each keychain costs 59/- rupees and Contact me for more quantity",
+        "Each keychain costs 69/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
@@ -242,9 +242,9 @@ const Home = () => {
       name: "Key Chains",
       image:
         "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999062/IMG-20250926-WA0009_t228dq.jpg",
-      price: 59,
+      price: 69,
       details:
-        "Each keychain costs 59/- rupees and Contact me for more quantity",
+        "Each keychain costs 69/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
@@ -252,9 +252,9 @@ const Home = () => {
       name: "Key Chains",
       image:
         "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999061/IMG-20250926-WA0011_rfp8ge.jpg",
-      price: 59,
+      price: 69,
       details:
-        "Each keychain costs 59/- rupees and Contact me for more quantity",
+        "Each keychain costs 69/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
@@ -262,9 +262,9 @@ const Home = () => {
       name: "Key Chains",
       image:
         "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999061/IMG-20250926-WA0010_b9vvgj.jpg",
-      price: 59,
+      price: 69,
       details:
-        "Each keychain costs 59/- rupees and Contact me for more quantity",
+        "Each keychain costs 69/- rupees and Contact me for more quantity",
       category: "Key Chains",
     },
     {
