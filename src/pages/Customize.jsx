@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 const Customize = () => {
   const [form, setForm] = useState({
@@ -75,7 +76,12 @@ ${form.referenceImageUrl || "N/A"}`;
   };
 
   return (
-    <form className="max-w-xl mx-auto bg-white rounded-xl shadow p-6 space-y-4">
+    <main className="min-h-screen p-4 flex items-center justify-center">
+    <form className="w-full max-w-xl bg-white rounded-xl shadow p-6 space-y-4">
+      <Helmet>
+        <title>The Painted Dream - Customize</title>
+        <meta name="description" content="Request your custom painting or handmade gift. Share your details and we'll create magic." />
+      </Helmet>
       <h1 className="text-2xl font-bold mb-2 text-center">🎨 Customize Your Order</h1>
 
       {message.text && (
@@ -134,6 +140,7 @@ ${form.referenceImageUrl || "N/A"}`;
         Send details on WhatsApp
       </button>
     </form>
+    </main>
   );
 }
 

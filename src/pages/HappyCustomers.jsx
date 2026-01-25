@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 const cards = [
   {
@@ -24,7 +25,7 @@ const cards = [
   },
 ];
 
-export default function EditorialStack() {
+export default function HappyCustomers() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const touchStartX = useRef(null);
@@ -53,14 +54,18 @@ export default function EditorialStack() {
   };
 
   return (
-    <div
+    <main
       className="w-full bg-gray-100 py-6 overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      <div className="relative max-w-6xl mx-auto h-[380px] flex items-center justify-center px-3">
+      <Helmet>
+        <title>The Painted Dream - Happy Customers</title>
+        <meta name="description" content="See what our happy customers say about our handcrafted art and gifts." />
+      </Helmet>
+      <section className="relative max-w-6xl mx-auto h-[380px] flex items-center justify-center px-3">
 
         {/* ⬅️ Desktop Arrow */}
         <button
@@ -125,8 +130,8 @@ export default function EditorialStack() {
         >
           ▶
         </button>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
   

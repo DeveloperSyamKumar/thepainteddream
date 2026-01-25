@@ -66,7 +66,7 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FaHome, FaPaintBrush, FaFire } from "react-icons/fa";
-import logo from "../assets/images/logo.png";
+import logo from "../../assets/images/logo.png";
 
 const Navbar = () => {
   const linkClasses = ({ isActive }) =>

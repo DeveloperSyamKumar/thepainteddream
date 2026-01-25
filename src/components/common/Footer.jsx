@@ -84,7 +84,7 @@ const Footer = () => {
           <p className="text-gray-700">
             <span className="font-medium">Email:</span>{" "}
             <a
-              href=" Syam Kumar"
+              href="mailto:syamkumargorli2002@gmail.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-700 hover:underline"

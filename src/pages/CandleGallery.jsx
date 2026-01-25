@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import { FaWhatsapp } from "react-icons/fa";
+import { Helmet } from "react-helmet-async";
 
 /* ------------------ HELPERS ------------------ */
 
@@ -89,7 +90,7 @@ const WhatsAppOrderModal = memo(
 
 /* ------------------ MINI CAROUSEL ------------------ */
 
-const ProductCarousel = memo(({ images, onClick }) => {
+const ProductCarousel = memo(({ images, onClick, altText }) => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -107,7 +108,7 @@ const ProductCarousel = memo(({ images, onClick }) => {
     <div className="relative h-48 overflow-hidden rounded">
       <img
         src={images[index]}
-        alt=""
+        alt={`${altText} - view ${index + 1}`}
         onClick={onClick}
         className="w-full h-full object-cover cursor-pointer"
       />
@@ -141,7 +142,7 @@ const ProductCarousel = memo(({ images, onClick }) => {
 
 /* ------------------ MAIN COMPONENT ------------------ */
 
-const  PremiumCandles = ()  =>{
+const  CandleGallery = ()  =>{
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -295,13 +296,17 @@ const  PremiumCandles = ()  =>{
   ];
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <main className="p-6 max-w-6xl mx-auto">
+      <Helmet>
+        <title>The Painted Dream - Candle Gallery</title>
+        <meta name="description" content="Explore our premium scented candles collection. Handcrafted for your home." />
+      </Helmet>
       <h1 className="text-3xl font-bold text-center mb-8">
         {" "}
         Premium Scented Candles
       </h1>
 
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <section className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((p) => {
           const images = getProductImages(p);
           return (
@@ -310,12 +315,14 @@ const  PremiumCandles = ()  =>{
                 <ProductCarousel
                   images={images}
                   onClick={() => openEnlarged(p)}
+                  altText={p.name}
                 />
               ) : (
                 <img
                   src={images[0]}
-                  alt={p.name}
+                  alt={`${p.name} - ${p.category}`}
                   onClick={() => openEnlarged(p)}
+                  loading="lazy"
                   className="h-48 w-full object-cover rounded cursor-pointer"
                 />
               )}
@@ -332,7 +339,7 @@ const  PremiumCandles = ()  =>{
             </div>
           );
         })}
-      </div>
+      </section>
 
       {/* Enlarged Viewer */}
       {enlarged.images.length > 0 && (
@@ -357,8 +364,8 @@ const  PremiumCandles = ()  =>{
         userInfo={userInfo}
         setUserInfo={setUserInfo}
       />
-    </div>
+    </main>
   );
 }
 
-export default PremiumCandles
+export default CandleGallery
