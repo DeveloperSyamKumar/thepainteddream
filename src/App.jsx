@@ -8,6 +8,7 @@ import Customize from "./pages/Customize";
 import CandleGallery from "./pages/CandleGallery";
 import HappyCustomers from "./pages/HappyCustomers";
 import LuxuryBirthdayGiftModal from "./features/home/components/LuxuryBirthdayGiftPoster";
+import ProductDetails from "./pages/ProductDetails";
 import { CartProvider } from "./context/CartContext";
 import CartModal from "./components/common/CartModal";
 
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/customize" element={<Customize />} />
         <Route path="/candleGallery" element={<CandleGallery />} />
         <Route path="/happyCustomers" element={<HappyCustomers />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
       </Routes>
       <Footer />
     </CartProvider>

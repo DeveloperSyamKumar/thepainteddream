@@ -3,15 +3,15 @@ import { FaInstagram, FaWhatsapp, FaEnvelope, FaFacebook, FaGlobe } from "react-
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-b from-blue-100 to-blue-200 text-gray-800 mt-16">
-      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+    <footer className="bg-gradient-to-b from-blue-100 to-blue-200 text-gray-800 mt-10">
+      <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
         {/* Logo & About */}
         <div className="sm:col-span-2">
-          <h1 className="text-2xl font-bold text-blue-800 mb-3">
+          <h1 className="text-xl font-bold text-blue-800 mb-2">
             The Painted Dream 🎨
           </h1>
-          <p className="text-sm text-gray-700 leading-relaxed">
+          <p className="text-xs text-gray-700 leading-relaxed">
             Handcrafted art that speaks to your soul. 
             From custom paintings to unique frames — 
             every creation is made with love and imagination.
@@ -44,7 +44,7 @@ const Footer = () => {
 
         {/* Artist Details */}
         <div>
-          <h2 className="text-lg font-semibold text-blue-900 mb-3">Artist</h2>
+          <h2 className="text-base font-semibold text-blue-900 mb-2">Artist</h2>
           <p className="text-gray-700">
             <span className="font-medium">Name:</span> Ms. Aishwarya
           </p>
@@ -73,7 +73,7 @@ const Footer = () => {
 
         {/* Developer Details */}
         <div>
-          <h2 className="text-lg font-semibold text-blue-900 mb-3">Developer</h2>
+          <h2 className="text-base font-semibold text-blue-900 mb-2">Developer</h2>
           <p className="text-gray-700">
             <span className="font-medium">Name:</span> Syam Kumar G
           </p>
@@ -96,7 +96,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="border-t border-blue-300 py-4 text-center text-sm text-gray-700">
+      <div className="border-t border-blue-300 py-2 text-center text-xs text-gray-700">
         © {new Date().getFullYear()} The Painted Dream. All rights reserved. |
         Developed with ❤️ by{" "}
         <a

@@ -1,4 +1,7 @@
-import React, { useState, useEffect,  } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { products } from "../data/products";
+import ProductCarousel from "../components/common/ProductCarousel";
 import { FaWhatsapp } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
 import { useCart } from "../context/CartContext";
@@ -85,60 +88,7 @@ function WhatsAppOrderModal({
   );
 }
 
-function ProductCarousel({ images = [], onClick }) {
-  const [index, setIndex] = useState(0);
-
-  const prev = (e) => {
-    e.stopPropagation();
-    setIndex((p) => (p === 0 ? images.length - 1 : p - 1));
-  };
-
-  const next = (e) => {
-    e.stopPropagation();
-    setIndex((p) => (p + 1) % images.length);
-  };
-
-  useEffect(() => {
-    if (images.length <= 1) return;
-    const itv = setInterval(() => {
-      setIndex((p) => (p + 1) % images.length);
-    }, 2500);
-    return () => clearInterval(itv);
-  }, [images]);
-
-  return (
-    <div className="relative w-full h-24 sm:h-48 overflow-hidden">
-      <img
-        src={images[index]}
-        className="w-full h-full object-cover cursor-pointer"
-        onClick={onClick}
-        alt="product"
-      />
-
-      {/* ⬅ */}
-      {images.length > 1 && (
-        <button
-          onClick={prev}
-          className="absolute left-1 top-1/2 -translate-y-1/2
-                     bg-black/40 text-white px-2 py-1 rounded-full"
-        >
-          ❮
-        </button>
-      )}
-
-      {/* ➡ */}
-      {images.length > 1 && (
-        <button
-          onClick={next}
-          className="absolute right-1 top-1/2 -translate-y-1/2
-                     bg-black/40 text-white px-2 py-1 rounded-full"
-        >
-          ❯
-        </button>
-      )}
-    </div>
-  );
-}
+// ProductCarousel removed (imported)
 
 
 
@@ -152,163 +102,9 @@ const Home = () => {
     "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999060/0003_dgrnuj.jpg",
   ];
 
-  const trendingProducts = [
-    {
-      id: 13,
-      name: "3d Moon",
-      images: [
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1763581671/WhatsApp_Image_2025-11-20_at_1.16.56_AM_k9smfq.jpg",
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1763581671/WhatsApp_Image_2025-11-20_at_1.16.56_AM_1_r5ugsc.jpg",
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1765390702/maxresdefault_eobqsv.jpg",
-      ],
-      price: "N/A",
-      details: "CONTACT US for prize details and customization",
-      category: "Trending",
-    },
-    {
-      id: 14,
-      name: "HAND-MADE GIFT BOX",
-      images: [
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1762534677/likki_02_oyfuiy.jpg",
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1763579906/likki_03_pdy961.jpg",
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1762534677/likki_01_nifvff.jpg",
-      ],
-      price: "N/A",
-      details: "CONTACT US for prize details and customization",
-      category: "Trending",
-    },
-    {
-      id: 15,
-      name: "HAND-MADE GIFT BOX",
-      images: [
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1763581672/WhatsApp_Image_2025-11-20_at_1.14.47_AM_2_wtoso1.jpg",
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1763581672/WhatsApp_Image_2025-11-20_at_1.14.48_AM_ynvcbh.jpg",
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1763581672/WhatsApp_Image_2025-11-20_at_1.14.47_AM_1_v6bl2l.jpg",
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1763581671/WhatsApp_Image_2025-11-20_at_1.14.47_AM_j7vd6s.jpg",
-      ],
-      price: "N/A",
-      details: "CONTACT US for prize details and customization",
-      category: "Trending",
-    },
-
-    // the rest remain single-image products
-    {
-      id: 1,
-      name: "Mandala Art Key Chains",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999062/IMG-20250926-WA0019_mecorg.jpg",
-      price: 69,
-      details:
-        "Each keychain costs 69/- rupees and Contact me for more quantity",
-      category: "Key Chains",
-    },
-    {
-      id: 2,
-      name: "Key chains",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999062/IMG-20250926-WA0012_elwxfj.jpg",
-      price: 69,
-      details:
-        "Each keychain costs 69/- rupees and Contact me for more quantity",
-      category: "Key Chains",
-    },
-    {
-      id: 3,
-      name: "Key Chains",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999062/IMG-20250926-WA0009_t228dq.jpg",
-      price: 69,
-      details:
-        "Each keychain costs 69/- rupees and Contact me for more quantity",
-      category: "Key Chains",
-    },
-    {
-      id: 4,
-      name: "Key Chains",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999061/IMG-20250926-WA0011_rfp8ge.jpg",
-      price: 69,
-      details:
-        "Each keychain costs 69/- rupees and Contact me for more quantity",
-      category: "Key Chains",
-    },
-    {
-      id: 5,
-      name: "Key Chains",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999061/IMG-20250926-WA0010_b9vvgj.jpg",
-      price: 69,
-      details:
-        "Each keychain costs 69/- rupees and Contact me for more quantity",
-      category: "Key Chains",
-    },
-    {
-      id: 6,
-      name: "VINTAGE FRAMES",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999061/IMG-20250926-WA0005_dkcc1h.jpg",
-      price: "N/A",
-      details: "CONTACT US for prize details and customization",
-      category: "Frames",
-    },
-    {
-      id: 7,
-      name: "3D MOON",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999060/IMG-20250926-WA0007_u1kj34.jpg",
-      price: 500,
-      details:
-        "3d moon 6inch Wooden wall Moon light lamp Hand crafted 3d moon design",
-      category: "Trending",
-    },
-    {
-      id: 8,
-      name: "3D MOON",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999060/IMG-20250926-WA0007_u1kj34.jpg",
-      price: 1000,
-      details:
-        "3d moon 12inch Wooden wall Moon light lamp Hand crafted 3d moon design",
-      category: "Trending",
-    },
-    {
-      id: 9,
-      name: "3D MOON",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758999060/IMG-20250926-WA0007_u1kj34.jpg",
-      price: 1250,
-      details:
-        "3d moon 15inch Wooden wall Moon light lamp Hand crafted 3d moon design",
-      category: "Trending",
-    },
-    {
-      id: 10,
-      name: "ROUND FRAME",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758912402/WhatsApp_Image_2025-09-26_at_23.59.31_453b090c_ytawq1.jpg",
-      price: "N/A",
-      details: "CONTACT US for prize details and customization",
-      category: "Trending",
-    },
-    {
-      id: 11,
-      name: "Rectangular Frame",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1759010229/WhatsApp_Image_2025-09-26_at_23.59.29_f3fb1a24_glh5iu.jpg",
-      price: "N/A",
-      details: "CONTACT US for prize details and customization",
-      category: "Trending",
-    },
-    {
-      id: 12,
-      name: "SQUARE FRAME",
-      image:
-        "https://res.cloudinary.com/dmyu5kjzs/image/upload/v1758912388/WhatsApp_Image_2025-09-26_at_23.59.30_2d1e6a96_gfuosd.jpg",
-      price: "N/A",
-      details: "CONTACT US for prize details and customization",
-      category: "Trending",
-    },
-  ];
+  const [trendingProducts, setTrendingProducts] = useState(
+    products.filter((p) => p.sourcePage === "home")
+  );
   
   // State
   const [heroIndex, setHeroIndex] = useState(0);
@@ -409,32 +205,36 @@ const nextHero = () =>
 
         {/* 🔒 2 COLUMNS ON MOBILE (Layout from MobHome) */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {console.log(trendingProducts, "data from trendingproducts")}
+
 
           {trendingProducts.map((p) => (
             <div
               key={p.id}
               className="bg-white rounded-lg shadow-sm border overflow-hidden flex flex-col"
             >
-              {Array.isArray(p.images) ? (
-                <ProductCarousel
-                  images={p.images}
-                  onClick={() => openEnlarged(p)}
-                />
-              ) : (
-                <img
-                  src={p.image}
-                  className="h-24 sm:h-48 w-full object-cover cursor-pointer"
-                  alt={`${p.name} - ${p.category}`}
-                  loading="lazy"
-                  onClick={() => openEnlarged(p)}
-                />
-              )}
+              <Link to={`/product/${p.id}`} className="block relative group">
+                {Array.isArray(p.images) ? (
+                  <ProductCarousel
+                    images={p.images}
+                    altText={p.name}
+                    className="h-24 sm:h-48"
+                  />
+                ) : (
+                  <img
+                    src={p.image}
+                    className="h-24 sm:h-48 w-full object-cover cursor-pointer hover:scale-105 transition-transform duration-500"
+                    alt={`${p.name} - ${p.category}`}
+                    loading="lazy"
+                  />
+                )}
+              </Link>
 
               <div className="p-2 flex flex-col flex-grow">
-                <h3 className="text-[12px] sm:text-base font-bold truncate leading-tight">
-                  {p.name}
-                </h3>
+                <Link to={`/product/${p.id}`}>
+                  <h3 className="text-[12px] sm:text-base font-bold truncate leading-tight hover:text-green-600 transition">
+                    {p.name}
+                  </h3>
+                </Link>
                 <p className="text-[10px] sm:text-sm text-gray-500 line-clamp-1 mb-1">
                   {p.details}
 
