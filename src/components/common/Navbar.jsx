@@ -85,7 +85,7 @@ const Navbar = () => {
         className="
           max-w-6xl w-full mx-auto
           flex items-center
-          justify-between
+          justify-center sm:justify-between gap-5 sm:gap-0
           px-2 sm:px-4 md:px-6
           h-12 sm:h-16 md:h-20
         "
@@ -95,7 +95,7 @@ const Navbar = () => {
           <img
             src={logo}
             alt="The Painted Dream Logo"
-            className="h-6 sm:h-10 md:h-12 lg:h-14 w-auto"
+            className="h-10 sm:h-10 md:h-12 lg:h-14 w-auto"
           />
           <span className="hidden sm:inline text-lg md:text-xl font-bold text-gray-800">
             The Painted Dream
@@ -103,12 +103,12 @@ const Navbar = () => {
         </Link>
 
 
-        <div className="flex items-center gap-2 sm:gap-6 md:gap-8">
+        <div className="flex items-center gap-10 sm:gap-6 md:gap-8">
           {/* Menu */}
           <div
             className="
               flex items-center
-              gap-2 sm:gap-6 md:gap-8
+              gap-10 sm:gap-6 md:gap-8
               text-xs sm:text-sm md:text-base
               whitespace-nowrap
             "

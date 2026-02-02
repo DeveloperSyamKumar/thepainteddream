@@ -49,7 +49,7 @@ const CandleGallery = () => {
               <div className="mt-4 flex gap-2">
                 <button
                   onClick={() => addToCart(p)}
-                   className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded transition font-medium text-sm"
+                   className="flex-1 bg-[#024785] hover:bg-[#00386b] text-white py-2 rounded transition font-medium text-sm"
                 >
                   Add to Cart
                 </button>

@@ -247,7 +247,7 @@ const nextHero = () =>
                 <div className="flex gap-2 mt-auto">
                   <button
                     onClick={() => addToCart(p)}
-                    className="flex-1 bg-red-600 text-white text-[10px] sm:text-xs py-1.5 rounded flex items-center justify-center gap-1 active:scale-95 transition hover:bg-red-700"
+                    className="flex-1 bg-[#024785] text-white text-[10px] sm:text-xs py-1.5 rounded flex items-center justify-center gap-1 active:scale-95 transition hover:bg-[#00386b]"
                   >
                     Add to Cart
                   </button>
